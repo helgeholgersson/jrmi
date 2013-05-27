@@ -81,8 +81,8 @@ public class GraphicalInterface extends javax.swing.JFrame {
         jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Qsort RMI client");
         setResizable(false);
-        setState(1);
 
         jScrollPane2.setViewportView(jList2);
 
@@ -103,11 +103,6 @@ public class GraphicalInterface extends javax.swing.JFrame {
 
         jLabel2.setText("The sorting method is invoked by RMI.");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(jList1);
 
         jButton2.setText("Move Up");
