@@ -230,7 +230,7 @@ private long[] getArrayFromList(){
     int listSize = l.size();
     long[] nums = new long[listSize];
     for(int i=0; i<listSize; i++){
-        nums[i] = Integer.parseInt(l.getElementAt(i).toString());
+        nums[i] = Long.parseLong(l.getElementAt(i).toString());
     }
     return nums;
 }
