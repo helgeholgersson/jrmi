@@ -12,21 +12,21 @@ import java.io.*;
 public class sortData implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    private int[] myarray;
+    private long[] myarray;
     public boolean error = false;    
     private String errormessage = "";
     
-    public sortData(int[] value)
+    public sortData(long[] value)
     {
         myarray = value; 
     }
     
-    public int[] getValue()
+    public long[] getValue()
     {
         return myarray;
     }
 
-    public void setValue(int[] value)
+    public void setValue(long[] value)
     {
         this.myarray = value;
     }

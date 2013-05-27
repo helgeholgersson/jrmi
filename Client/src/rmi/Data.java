@@ -8,17 +8,17 @@ import java.io.*;
 
 public class Data implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int value;
+    private long value;
 
-    public Data(int value) {
+    public Data(long value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(long value) {
         this.value = value;
     }
 }
