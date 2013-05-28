@@ -10,25 +10,82 @@
  */
 package client;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
-import java.util.*;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
 
 /**
  *
  * @author anfo0008
  */
 public class GraphicalInterface extends javax.swing.JFrame {
-
+    private int activeList = 0; // 0 == inaktiv, 1 == osorterad, 2 == sorterad, detta är vilka knapparna move up, move down, remove element skall ändra i.
+    
     /** Creates new form GraphicalInterface */
     public GraphicalInterface() {
         initComponents();
         jList1.setModel(new DefaultListModel());
         jList2.setModel(new DefaultListModel());
     }
+    
+    private long[] getArrayFromList(){
+        DefaultListModel l = (DefaultListModel) jList1.getModel();
+        int listSize = l.size();
+        long[] nums = new long[listSize];
+        for(int i=0; i<listSize; i++){
+            nums[i] = Long.parseLong(l.getElementAt(i).toString());
+        }
+        return nums;
+    }
 
+    private void addNumToList(String i){
+        if(!i.isEmpty()){
+            if(i.length() > 19){
+                i = i.substring(0, 19);
+            }
+            try{
+                DefaultListModel l = (DefaultListModel) jList1.getModel();
+                l.addElement(i);
+                jList1.setModel(l);
+                jTextField1.setText("");
+                jButton1.setEnabled(false);
+            } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
+        } 
+    }
+
+    private void addSortedArray(long[] arr){
+        try{
+            DefaultListModel l = (DefaultListModel) jList2.getModel();
+            l.removeAllElements();
+            for(int i = 0; i < arr.length; i++){
+                l.addElement(arr[i]);
+            }
+            jList2.setModel(l);
+            jTextField1.setText("");
+        } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
+    }
+
+    private void moveSortedListToUnsortedList(){
+        try{
+            if(jList2.getModel().getSize() > 0) {
+                DefaultListModel sl = (DefaultListModel) jList2.getModel();
+                DefaultListModel ul = (DefaultListModel) jList1.getModel();
+                ul.removeAllElements();
+                int lengthOfSorted = sl.size();
+                long[] arr = new long[lengthOfSorted];
+                for(int i = 0; i < lengthOfSorted; i++){
+                    arr[i] = Long.parseLong(sl.getElementAt(i).toString());
+                    ul.addElement(arr[i]);
+                }
+                jButton5.setEnabled(true);
+            } else{
+                JOptionPane.showMessageDialog(null, "Sorted list is empty, will not copy...");
+            }
+        } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error while moving list!\n"+E);}
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -61,9 +118,7 @@ public class GraphicalInterface extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         jMenuBar3 = new javax.swing.JMenuBar();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -84,34 +139,77 @@ public class GraphicalInterface extends javax.swing.JFrame {
         setTitle("Qsort RMI client");
         setResizable(false);
 
+        jList2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jList2MouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(jList2);
 
-        jLabel1.setText("This application sends an array to a server which sorts the array and sends it back.");
+        jLabel1.setText("This application sends a numeric array to a server that sorts the array and sends it back.");
 
+        jTextField1.setText("Write numeric inputs here");
+        jTextField1.setMaximumSize(new java.awt.Dimension(4, 16));
+        jTextField1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTextField1MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTextField1MouseReleased(evt);
+            }
+        });
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField1KeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
         });
 
         jButton1.setText("Add to List");
+        jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("The sorting method is invoked by RMI.");
+        jLabel2.setText("The sorting method on the server are invoked by RMI.");
 
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jList1MouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         jButton2.setText("Move Up");
+        jButton2.setEnabled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Move Down");
+        jButton3.setEnabled(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Remove Element");
+        jButton4.setEnabled(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Sort List");
+        jButton5.setEnabled(false);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -119,8 +217,15 @@ public class GraphicalInterface extends javax.swing.JFrame {
         });
 
         jButton6.setText("Copy to clipboard");
+        jButton6.setEnabled(false);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setText("Copy to unsorted list");
+        jButton7.setEnabled(false);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -129,14 +234,14 @@ public class GraphicalInterface extends javax.swing.JFrame {
 
         jMenu5.setText("File");
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItem2.setText("About");
-        jMenu5.add(jMenuItem2);
-
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem3.setText("Quit");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu5.add(jMenuItem3);
-        jMenu5.add(jSeparator1);
 
         jMenuBar3.add(jMenu5);
 
@@ -174,21 +279,20 @@ public class GraphicalInterface extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
-                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel2))
                 .addContainerGap())
         );
@@ -225,57 +329,27 @@ public class GraphicalInterface extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-private long[] getArrayFromList(){
-    DefaultListModel l = (DefaultListModel) jList1.getModel();
-    int listSize = l.size();
-    long[] nums = new long[listSize];
-    for(int i=0; i<listSize; i++){
-        nums[i] = Long.parseLong(l.getElementAt(i).toString());
-    }
-    return nums;
-}
-    
-private void addNumToList(String i){
-    if(!i.isEmpty()){
-        try{
-            DefaultListModel l = (DefaultListModel) jList1.getModel();
-            l.addElement(i);
-            jList1.setModel(l);
-            jTextField1.setText("");
-        } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
-    }
-}
 
-private void addSortedArray(long[] arr){
-    try{
-        DefaultListModel l = (DefaultListModel) jList2.getModel();
-        l.removeAllElements();
-        for(int i = 0; i < arr.length; i++){
-            l.addElement(arr[i]);
-        }
-        jList2.setModel(l);
-        jTextField1.setText("");
-    } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
-}
 
-private void moveSortedListToUnsortedList(){
-    try{
-        if(jList2.getModel().getSize() > 0)
-            jList1.setModel(jList2.getModel());
-        else{
-            JOptionPane.showMessageDialog(null, "List 2 is empty, will not move...");
-        }
-    } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error while moving list!\n"+E);
-    }
-}
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+     if(jButton5.isEnabled() == false)
+            activateSortButton();
     addNumToList(jTextField1.getText());
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
     int key = evt.getKeyCode();
-    if(key == KeyEvent.VK_ENTER)
-        addNumToList(jTextField1.getText());
+    if(key == KeyEvent.VK_ENTER){
+        if(jButton1.isEnabled() == true){
+            if(jButton5.isEnabled() == false)
+                activateSortButton();
+            
+            addNumToList(jTextField1.getText());
+        }
+    }
+    if(jTextField1.getText().length() > 19){
+        jTextField1.setText(jTextField1.getText().substring(0, 19));
+    }
 }//GEN-LAST:event_jTextField1KeyPressed
 
 private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -292,11 +366,176 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     long[] arr = getArrayFromList();
     arr = Client.sendArray(arr);
     addSortedArray(arr);
+    activateSortedListBtns();
 }//GEN-LAST:event_jButton5ActionPerformed
 
 private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
      moveSortedListToUnsortedList();
 }//GEN-LAST:event_jButton7ActionPerformed
+
+private void activateListHandleBtns(){
+    jButton2.setEnabled(true);
+    jButton3.setEnabled(true);
+    jButton4.setEnabled(true);
+}
+
+private void activateSortedListBtns(){
+    jButton6.setEnabled(true);
+    jButton7.setEnabled(true);
+}
+private void activateSortButton(){
+    jButton5.setEnabled(true);
+}
+
+private void jList2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseReleased
+    if(!jList2.isSelectionEmpty()){
+        if(activeList == 0){
+            activateListHandleBtns();
+        }
+        jList1.clearSelection();
+        activeList = 2;
+    }
+}//GEN-LAST:event_jList2MouseReleased
+
+private void jList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseReleased
+    if(!jList1.isSelectionEmpty()){
+        if(activeList == 0){
+            activateListHandleBtns();
+        }
+        jList2.clearSelection();
+        activeList = 1;
+    }
+}//GEN-LAST:event_jList1MouseReleased
+
+private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    if(activeList == 1){
+        int idx = jList1.getSelectedIndex();
+        if(idx != 0){
+            String val = jList1.getSelectedValue().toString();
+            try{
+                DefaultListModel l = (DefaultListModel) jList1.getModel();
+                String val2 = l.getElementAt(idx - 1).toString();
+                l.setElementAt(val, idx - 1);
+                l.setElementAt(val2, idx);
+                jList1.setModel(l);
+                jList1.setSelectedIndex(idx - 1);
+            } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
+        }
+    }    
+    if(activeList == 2){
+        int idx = jList2.getSelectedIndex();
+        if(idx != 0){
+            String val = jList2.getSelectedValue().toString();
+            try{
+                DefaultListModel l = (DefaultListModel) jList2.getModel();
+                String val2 = l.getElementAt(idx - 1).toString();
+                l.setElementAt(val, idx - 1);
+                l.setElementAt(val2, idx);
+                jList2.setModel(l);
+                jList2.setSelectedIndex(idx - 1);
+            } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
+        }
+    }
+}//GEN-LAST:event_jButton2ActionPerformed
+
+private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    if(activeList == 1){
+        int idx = jList1.getSelectedIndex();
+        if(idx != jList1.getModel().getSize()  -1 ){
+            String val = jList1.getSelectedValue().toString();
+            try{
+                DefaultListModel l = (DefaultListModel) jList1.getModel();
+                String val2 = l.getElementAt(idx + 1).toString();
+                l.setElementAt(val, idx + 1);
+                l.setElementAt(val2, idx);
+                jList1.setModel(l);
+                jList1.setSelectedIndex(idx + 1);
+            } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
+        }
+    }    
+    if(activeList == 2){
+        int idx = jList2.getSelectedIndex();
+        if(idx != jList2.getModel().getSize() -1 ){
+            String val = jList2.getSelectedValue().toString();
+            try{
+                DefaultListModel l = (DefaultListModel) jList2.getModel();
+                String val2 = l.getElementAt(idx + 1).toString();
+                l.setElementAt(val, idx + 1);
+                l.setElementAt(val2, idx);
+                jList2.setModel(l);
+                jList2.setSelectedIndex(idx + 1);
+            } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
+        }
+    }
+}//GEN-LAST:event_jButton3ActionPerformed
+
+private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    if(activeList == 1){
+        DefaultListModel l = (DefaultListModel)jList1.getModel();
+        l.removeElementAt(jList1.getSelectedIndex());
+        jList1.setModel(l);
+        if(jList1.getModel().getSize() == 0){
+            jButton2.setEnabled(false);
+            jButton3.setEnabled(false);
+            jButton4.setEnabled(false);
+            jButton5.setEnabled(false);
+            activeList = 0;
+        }
+    }
+    if(activeList == 2){
+        DefaultListModel l = (DefaultListModel)jList2.getModel();
+        l.removeElementAt(jList2.getSelectedIndex());
+        jList2.setModel(l);
+        if(jList2.getModel().getSize() == 0){
+            jButton2.setEnabled(false);
+            jButton3.setEnabled(false);
+            jButton4.setEnabled(false);
+            jButton6.setEnabled(false);
+            jButton7.setEnabled(false);
+            activeList = 0;
+        }
+    }
+}//GEN-LAST:event_jButton4ActionPerformed
+
+private void jTextField1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MousePressed
+    if(jTextField1.getText().equals("Write numeric inputs here"))
+        jTextField1.setText("");
+}//GEN-LAST:event_jTextField1MousePressed
+
+private void jTextField1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseReleased
+    if(jButton1.isEnabled() == false)
+        if(!jTextField1.getText().isEmpty())
+            jButton1.setEnabled(true);
+}//GEN-LAST:event_jTextField1MouseReleased
+
+private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+ if(!jTextField1.getText().isEmpty()){
+            if(jButton1.isEnabled() == false)
+                jButton1.setEnabled(true);
+        } else {
+            if(jButton1.isEnabled() == true)
+                jButton1.setEnabled(false);
+        }
+ 
+     if(jTextField1.getText().length() > 19){
+        jTextField1.setText(jTextField1.getText().substring(0, 19));
+        
+    }
+}//GEN-LAST:event_jTextField1KeyReleased
+
+private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    String clipBoard = jList2.getModel().getElementAt(0).toString();
+    for(int i = 1; i < jList2.getModel().getSize() -1; i++){
+        clipBoard +="\n"+jList2.getModel().getElementAt(i).toString();
+    }
+    StringSelection stringSelection = new StringSelection (clipBoard);
+    Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+    clpbrd.setContents (stringSelection, null);
+}//GEN-LAST:event_jButton6ActionPerformed
+
+private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    System.exit(0);
+}//GEN-LAST:event_jMenuItem3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -320,13 +559,11 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuBar jMenuBar3;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
