@@ -42,6 +42,7 @@ public class GraphicalInterface extends javax.swing.JFrame {
     }
 
     private void addNumToList(String i){
+        i = i.replaceAll("[^0-9 ]","");
         if(!i.isEmpty()){
             if(i.length() > 19){
                 i = i.substring(0, 19);
@@ -52,6 +53,7 @@ public class GraphicalInterface extends javax.swing.JFrame {
                 jList1.setModel(l);
                 jTextField1.setText("");
                 jButton1.setEnabled(false);
+                activateSortButton();
             } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
         } 
     }
@@ -332,8 +334,6 @@ public class GraphicalInterface extends javax.swing.JFrame {
 
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-     if(jButton5.isEnabled() == false)
-            activateSortButton();
     addNumToList(jTextField1.getText());
 }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -341,9 +341,6 @@ private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:eve
     int key = evt.getKeyCode();
     if(key == KeyEvent.VK_ENTER){
         if(jButton1.isEnabled() == true){
-            if(jButton5.isEnabled() == false)
-                activateSortButton();
-            
             addNumToList(jTextField1.getText());
         }
     }
@@ -354,12 +351,15 @@ private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:eve
 
 private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
     String IP = JOptionPane.showInputDialog("Enter server IP (Default : 193.10.237.105)");
-    Client.setIp(IP);
+    if(IP != null)
+        Client.setIp(IP);
 }//GEN-LAST:event_jMenuItem4ActionPerformed
 
 private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    try{
     int Port = Integer.parseInt(JOptionPane.showInputDialog("Enter server Port (Default : 32145)"));
     Client.setPort(Port);
+    } catch (Exception E) {} 
 }//GEN-LAST:event_jMenuItem1ActionPerformed
 
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
