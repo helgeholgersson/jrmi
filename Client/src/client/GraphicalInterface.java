@@ -82,11 +82,45 @@ public class GraphicalInterface extends javax.swing.JFrame {
                     arr[i] = Long.parseLong(sl.getElementAt(i).toString());
                     ul.addElement(arr[i]);
                 }
-                jButton5.setEnabled(true);
+                activateSortButton();
             } else{
                 JOptionPane.showMessageDialog(null, "Sorted list is empty, will not copy...");
             }
         } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error while moving list!\n"+E);}
+    }
+    
+    private void limitInputField(){
+        if(jTextField1.getText().length() > 19){
+            jTextField1.setText(jTextField1.getText().substring(0, 19));
+        }
+    }
+    
+    private void activateListHandleBtns(){
+    jButton2.setEnabled(true);
+    jButton3.setEnabled(true);
+    jButton4.setEnabled(true);
+}
+
+    private void activateSortedListBtns(){
+        jButton6.setEnabled(true);
+        jButton7.setEnabled(true);
+    }
+    private void activateSortButton(){
+        jButton5.setEnabled(true);
+    }
+
+    private void disableListHandleBtns(){
+        jButton2.setEnabled(true);
+        jButton3.setEnabled(true);
+        jButton4.setEnabled(true);
+    }
+
+    private void disableSortedListBtns(){
+        jButton6.setEnabled(true);
+        jButton7.setEnabled(true);
+    }
+    private void disableSortButton(){
+        jButton5.setEnabled(true);
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -338,14 +372,13 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+    limitInputField();
+    
     int key = evt.getKeyCode();
     if(key == KeyEvent.VK_ENTER){
         if(jButton1.isEnabled() == true){
             addNumToList(jTextField1.getText());
         }
-    }
-    if(jTextField1.getText().length() > 19){
-        jTextField1.setText(jTextField1.getText().substring(0, 19));
     }
 }//GEN-LAST:event_jTextField1KeyPressed
 
@@ -373,19 +406,6 @@ private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
      moveSortedListToUnsortedList();
 }//GEN-LAST:event_jButton7ActionPerformed
 
-private void activateListHandleBtns(){
-    jButton2.setEnabled(true);
-    jButton3.setEnabled(true);
-    jButton4.setEnabled(true);
-}
-
-private void activateSortedListBtns(){
-    jButton6.setEnabled(true);
-    jButton7.setEnabled(true);
-}
-private void activateSortButton(){
-    jButton5.setEnabled(true);
-}
 
 private void jList2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseReleased
     if(!jList2.isSelectionEmpty()){
@@ -475,10 +495,8 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         l.removeElementAt(jList1.getSelectedIndex());
         jList1.setModel(l);
         if(jList1.getModel().getSize() == 0){
-            jButton2.setEnabled(false);
-            jButton3.setEnabled(false);
-            jButton4.setEnabled(false);
-            jButton5.setEnabled(false);
+            disableListHandleBtns();
+            disableSortButton();
             activeList = 0;
         }
     }
@@ -487,11 +505,8 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         l.removeElementAt(jList2.getSelectedIndex());
         jList2.setModel(l);
         if(jList2.getModel().getSize() == 0){
-            jButton2.setEnabled(false);
-            jButton3.setEnabled(false);
-            jButton4.setEnabled(false);
-            jButton6.setEnabled(false);
-            jButton7.setEnabled(false);
+            disableListHandleBtns();
+            disableSortedListBtns();
             activeList = 0;
         }
     }
@@ -509,18 +524,12 @@ private void jTextField1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jTextField1MouseReleased
 
 private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
- if(!jTextField1.getText().isEmpty()){
-            if(jButton1.isEnabled() == false)
-                jButton1.setEnabled(true);
+    limitInputField();
+    if(!jTextField1.getText().isEmpty()){
+            jButton1.setEnabled(true);
         } else {
-            if(jButton1.isEnabled() == true)
-                jButton1.setEnabled(false);
+            jButton1.setEnabled(false);
         }
- 
-     if(jTextField1.getText().length() > 19){
-        jTextField1.setText(jTextField1.getText().substring(0, 19));
-        
-    }
 }//GEN-LAST:event_jTextField1KeyReleased
 
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
