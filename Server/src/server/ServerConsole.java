@@ -29,6 +29,7 @@ public class ServerConsole extends JFrame implements ActionListener
     int port = -1;
     private ServerGUI myparent;
     private JFileChooser dialog = new JFileChooser(System.getProperty("user.dir"));
+    private JScrollPane scrl = new JScrollPane(ta_output);
     
     //Konstruktor
     public ServerConsole(int newport, ServerGUI parent)
@@ -43,12 +44,19 @@ public class ServerConsole extends JFrame implements ActionListener
         ta_output.setEditable(false);
         
         Container cont = getContentPane();
+        Container ut = new Container();
         
         cont.setLayout(new BorderLayout());
+        ut.setLayout(new BorderLayout());
+        
+        //ut.add(BorderLayout.CENTER, ta_output);
+        //ut.add(BorderLayout.EAST, scrl);
         
         cont.add(BorderLayout.NORTH, lbl_title);
-        cont.add(BorderLayout.CENTER, ta_output);
+        cont.add(BorderLayout.CENTER, scrl);
         cont.add(BorderLayout.SOUTH, btn_clr);
+        
+        scrl.setBounds(3, 3, 300, 200);
         
         //Setup Menu bar
         JMenuBar mb = new JMenuBar();
