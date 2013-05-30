@@ -13,11 +13,13 @@ public class Client {
     private static Registry registry;
     private static GraphicalInterface gui;
     
+    /* Ritar upp ett GUI */
     public static void main(String[] args) throws Exception {
          gui = new GraphicalInterface();
          gui.setVisible(true);
     }
     
+    /* Metod för att skicka iväg en array till RMI-servern */
     public static long[] sendArray(long[] array){
         try{
             registry = LocateRegistry.getRegistry(HOST, PORT);

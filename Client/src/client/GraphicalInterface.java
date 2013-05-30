@@ -19,18 +19,19 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author anfo0008
+ * @author Andréas Forsbom
  */
 public class GraphicalInterface extends javax.swing.JFrame {
     private int activeList = 0; // 0 == inaktiv, 1 == osorterad, 2 == sorterad, detta är vilka knapparna move up, move down, remove element skall ändra i.
     
-    /** Creates new form GraphicalInterface */
+    /** Konstrutkro för GUI-klassen, genererar två listor */
     public GraphicalInterface() {
         initComponents();
         jList1.setModel(new DefaultListModel());
         jList2.setModel(new DefaultListModel());
     }
     
+    /** Extraherar en array från en jList */
     private long[] getArrayFromList(){
         DefaultListModel l = (DefaultListModel) jList1.getModel();
         int listSize = l.size();
@@ -41,6 +42,7 @@ public class GraphicalInterface extends javax.swing.JFrame {
         return nums;
     }
 
+    /** Tar en input från en jTextField och sätter in i en jList */
     private void addNumToList(String i){
         i = i.replaceAll("[^0-9 ]","");
         if(!i.isEmpty()){
@@ -58,6 +60,9 @@ public class GraphicalInterface extends javax.swing.JFrame {
         } 
     }
 
+    /** Lägger till en array i listan för sorterade arrayer
+     * @param arr - arrayen som läggs in i listan
+     */
     private void addSortedArray(long[] arr){
         try{
             DefaultListModel l = (DefaultListModel) jList2.getModel();
@@ -70,6 +75,7 @@ public class GraphicalInterface extends javax.swing.JFrame {
         } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error!\n"+E);}
     }
 
+    /** Flytta den sorterade listan till den osorterade listan */
     private void moveSortedListToUnsortedList(){
         try{
             if(jList2.getModel().getSize() > 0) {
@@ -89,36 +95,44 @@ public class GraphicalInterface extends javax.swing.JFrame {
         } catch (Exception E) {JOptionPane.showMessageDialog(null, "Error while moving list!\n"+E);}
     }
     
+    /* Begränsar längden på siffrorna man skriver in */
     private void limitInputField(){
         if(jTextField1.getText().length() > 19){
             jTextField1.setText(jTextField1.getText().substring(0, 19));
         }
     }
     
+    /* Aktivera list-hanteringsknapparna*/
     private void activateListHandleBtns(){
     jButton2.setEnabled(true);
     jButton3.setEnabled(true);
     jButton4.setEnabled(true);
 }
 
+    /* Aktivera de specifika knapparna för sorterade listan */
     private void activateSortedListBtns(){
         jButton6.setEnabled(true);
         jButton7.setEnabled(true);
     }
+    
+    /* Aktivera sorteringsknappen */
     private void activateSortButton(){
         jButton5.setEnabled(true);
     }
 
+    /* Avaktivera list-hanteringsknapparna*/
     private void disableListHandleBtns(){
         jButton2.setEnabled(true);
         jButton3.setEnabled(true);
         jButton4.setEnabled(true);
     }
 
+    /* Avaktivera de specifika knapparna för sorterade listan */
     private void disableSortedListBtns(){
         jButton6.setEnabled(true);
         jButton7.setEnabled(true);
     }
+    /* Avktivera sorteringsknappen */
     private void disableSortButton(){
         jButton5.setEnabled(true);
     }
@@ -382,12 +396,14 @@ private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:eve
     }
 }//GEN-LAST:event_jTextField1KeyPressed
 
+/* metod för att ändra IP till RMI-servern */
 private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
     String IP = JOptionPane.showInputDialog("Enter server IP (Default : 193.10.237.105)");
     if(IP != null)
         Client.setIp(IP);
 }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+/* metod för att ändra Port till RMI-servern */
 private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
     try{
     int Port = Integer.parseInt(JOptionPane.showInputDialog("Enter server Port (Default : 32145)"));
@@ -395,6 +411,7 @@ private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     } catch (Exception E) {} 
 }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+/* metod för att ändra sortera arrayen, anropar klassen klients metod sendArray */
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
     long[] arr = getArrayFromList();
     arr = Client.sendArray(arr);
@@ -402,11 +419,12 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     activateSortedListBtns();
 }//GEN-LAST:event_jButton5ActionPerformed
 
+/* dokumenterat ovan */
 private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
      moveSortedListToUnsortedList();
 }//GEN-LAST:event_jButton7ActionPerformed
 
-
+/* avaktivera listhanteringsknapparna om man väljer ett element */
 private void jList2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseReleased
     if(!jList2.isSelectionEmpty()){
         if(activeList == 0){
@@ -417,6 +435,7 @@ private void jList2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     }
 }//GEN-LAST:event_jList2MouseReleased
 
+/* avaktivera listhanteringsknapparna om man väljer ett element */
 private void jList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseReleased
     if(!jList1.isSelectionEmpty()){
         if(activeList == 0){
@@ -427,6 +446,7 @@ private void jList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     }
 }//GEN-LAST:event_jList1MouseReleased
 
+/* Flytta ett element i listan ett steg uppåt */
 private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
     if(activeList == 1){
         int idx = jList1.getSelectedIndex();
@@ -458,6 +478,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 }//GEN-LAST:event_jButton2ActionPerformed
 
+/* Flytta ett element i listan ett steg nedåt */
 private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     if(activeList == 1){
         int idx = jList1.getSelectedIndex();
@@ -489,12 +510,13 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 }//GEN-LAST:event_jButton3ActionPerformed
 
+/* Tar bort ett element i en lista */
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     if(activeList == 1){
         DefaultListModel l = (DefaultListModel)jList1.getModel();
         l.removeElementAt(jList1.getSelectedIndex());
         jList1.setModel(l);
-        if(jList1.getModel().getSize() == 0){
+        if(jList1.getModel().getSize() < 1){
             disableListHandleBtns();
             disableSortButton();
             activeList = 0;
@@ -504,7 +526,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         DefaultListModel l = (DefaultListModel)jList2.getModel();
         l.removeElementAt(jList2.getSelectedIndex());
         jList2.setModel(l);
-        if(jList2.getModel().getSize() == 0){
+        if(jList2.getModel().getSize() < 1){
             disableListHandleBtns();
             disableSortedListBtns();
             activeList = 0;
@@ -512,17 +534,19 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 }//GEN-LAST:event_jButton4ActionPerformed
 
+/* Tar bort texten som visas i början för att ta in nummer istället */
 private void jTextField1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MousePressed
     if(jTextField1.getText().equals("Write numeric inputs here"))
         jTextField1.setText("");
 }//GEN-LAST:event_jTextField1MousePressed
 
+/* Avaktivera lägg-till knappen om textfältet är tomt, aktivera det om det inte är tomt */
 private void jTextField1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseReleased
     if(jButton1.isEnabled() == false)
         if(!jTextField1.getText().isEmpty())
             jButton1.setEnabled(true);
 }//GEN-LAST:event_jTextField1MouseReleased
-
+/* Avaktivera lägg-till knappen om textfältet är tomt, aktivera det om det inte är tomt */
 private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
     limitInputField();
     if(!jTextField1.getText().isEmpty()){
@@ -532,13 +556,16 @@ private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
         }
 }//GEN-LAST:event_jTextField1KeyReleased
 
+/* Copy to clipboard */
 private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    StringSelection stringSelection = null;
+    Clipboard clpbrd = null;
     String clipBoard = jList2.getModel().getElementAt(0).toString();
-    for(int i = 1; i < jList2.getModel().getSize() -1; i++){
+    for(int i = 1; i < jList2.getModel().getSize(); i++){
         clipBoard +="\n"+jList2.getModel().getElementAt(i).toString();
     }
-    StringSelection stringSelection = new StringSelection (clipBoard);
-    Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+    stringSelection = new StringSelection (clipBoard);
+    clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
     clpbrd.setContents (stringSelection, null);
 }//GEN-LAST:event_jButton6ActionPerformed
 
