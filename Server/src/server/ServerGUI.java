@@ -31,7 +31,7 @@ public class ServerGUI extends JFrame implements ActionListener
     private JLabel lbl_status = new JLabel(msg_serveroff);
     private JLabel lbl_footer = new JLabel("Created by Andreas Forsbom, Jacob Svedman & Sebastian Holgersson");
     private JTextField tf_port = new JTextField("32145");
-    private JLabel lbl_lgport = new JLabel("Listen for client on port");
+    private JLabel lbl_lgport = new JLabel("Port:");
     private static Registry registry = null;
     private boolean active = false;
     int port = 32145;
@@ -48,6 +48,7 @@ public class ServerGUI extends JFrame implements ActionListener
         lbl_title.setFont(new Font("Helvetica", Font.BOLD, 32));
         lbl_status.setFont(new Font("Helvetica", Font.BOLD, 32));
         lbl_status.setForeground(Color.red);
+        //lbl_lgport.setBorder(BorderFactory.createLineBorder(Color.black));
         
         JMenuBar mb = new JMenuBar();
         setJMenuBar(mb);
@@ -66,7 +67,7 @@ public class ServerGUI extends JFrame implements ActionListener
         
         cont.setLayout(new GridLayout(3,1));
         header.setLayout(new FlowLayout());
-        section.setLayout(new GridLayout(2,2)); //2r 2c
+        section.setLayout(new GridLayout(2,4, 2, 2)); //2r 2c
         footer.setLayout(new GridLayout(3,1)); //3r 1c
         
         //Complete Header layout
@@ -74,13 +75,16 @@ public class ServerGUI extends JFrame implements ActionListener
         header.add(lbl_status);
         
         //Complete Section layout
+        section.add(new JLabel(""));
         section.add(lbl_lgport);
+        section.add(new JLabel(""));
+        section.add(new JLabel(""));
         section.add(new JLabel(""));
         section.add(tf_port);
         section.add(btn_start);
+        section.add(new JLabel(""));
         
         //Complete Footer layout
-        ///////footer.add(lbl_status);
         footer.add(new JLabel(""));
         footer.add(lbl_footer);
         
@@ -96,7 +100,7 @@ public class ServerGUI extends JFrame implements ActionListener
         opt_stop.setEnabled(false);
         opt_hidecon.setEnabled(false);
         setLocationRelativeTo(null);
-        setSize(640, 320);
+        setSize(440, 320);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("RMI Server");

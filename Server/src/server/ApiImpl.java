@@ -19,44 +19,46 @@ public class ApiImpl extends UnicastRemoteObject implements Api
     
     @Override
     public synchronized sortData quickSort(sortData unsorted) throws RemoteException
-    {
+    {        
         //int[] sorted = new int[unsorted.length];
         //int[] j = {3,2,1};
         long[] j = (long[])unsorted.getValue().clone();
-        
+
         //Print in console
-        if(myparent.myconsole != null)
+        try
         {
-            try
+            msg += "" + UnicastRemoteObject.getClientHost() + " Requested to sort: ";
+            for(int i=0; i<j.length; i++)
             {
-                msg = "" + UnicastRemoteObject.getClientHost() + " Requested to sort: ";
-                for(int i=0; i<j.length; i++)
-                {
-                    msg += ""+j[i]+" ";
-                }
+                msg += ""+j[i]+" ";
             }
-            catch (ServerNotActiveException e)
-            {
-                msg = "Server not active";
-            }
-            myparent.myconsole.appendOutput(msg);
-            msg = "";
         }
+        catch (ServerNotActiveException e)
+        {
+            msg = "Server not active";
+        }
+        myparent.myconsole.appendOutput(msg);
         
         Quicksort sorter = new Quicksort();
+        
+        myparent.myconsole.appendOutput("Created Quicksorter");
         
         try
         {
             sorter.sort(j);
             j = sorter.getNumbers();
+            myparent.myconsole.appendOutput("Sorted output");
         }
         catch(Exception e)
         {
             unsorted.error = true;
             unsorted.appendErrorMessage("Quicksort failed");
+            myparent.myconsole.appendOutput("Quicksort failed, returning original array with error message");
+            
         }
         
         unsorted.setValue(j);
+        
         return unsorted;
     }
 }
