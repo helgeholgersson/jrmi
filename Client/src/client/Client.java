@@ -7,6 +7,11 @@ package client;
 import java.rmi.registry.*;
 import rmi.*;
 
+/*
+ * @author Helge Holgersson, Jacob Svedman, Andreas Forsbom
+ * Detta är main-klassen för klientsidan. Denna klass ritar upp ett GUI samt ger
+ * möjligheten att skicka en array till servern med hjälp av API't.
+ */
 public class Client {
     private static String HOST = "193.10.237.105";
     private static int PORT = 32145;
